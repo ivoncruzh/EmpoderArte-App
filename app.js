@@ -1,19 +1,272 @@
-const app=document.getElementById('app');
-const demo={student:{name:'Mariana López',id:'EA-0001',plan:'Paquete Mensual',valid:'30/09/2026',next:'$499',classes:[['Jazz','5:00 PM - 6:00 PM','Salón 1 · Prof. Andrea'],['Ballet','6:00 PM - 7:00 PM','Salón 2 · Prof. Mariana'],['Hip Hop','5:00 PM - 6:00 PM','Salón 3 · Prof. Carlos'],['Contemporáneo','6:00 PM - 7:00 PM','Salón 1 · Prof. Andrea']]},admin:{name:'Administradora'}};
-const classImgs=['assets/dancer-bg.jpg','assets/dancer-bg.jpg','assets/dancer-bg.jpg','assets/dancer-bg.jpg'];
-function logoImg(cls='logo-large'){return `<img class="${cls}" src="assets/logo.png" alt="EmpoderArte Escuela de Danza">`}
-function login(){app.innerHTML=`<main class="shell login-wrap"><section class="login-card">${logoImg()}<div class="field"><span class="ico">♙</span><input id="email" type="text" placeholder="Número de alumno o correo"></div><div class="field"><span class="ico">▣</span><input id="pass" type="password" placeholder="Contraseña"><span class="eye">◉</span></div><label class="remember"><input id="remember" type="checkbox"> Recordarme</label><button class="btn full" onclick="doLogin()">Iniciar sesión</button><p class="forgot">¿Olvidaste tu contraseña?</p><div class="slogan">SUEÑA <span>•</span> BAILA <span>•</span> LOGRA</div></section></main>`}
-function doLogin(){const email=(document.getElementById('email').value||'').toLowerCase();sessionStorage.role=email.includes('admin')?'admin':'student';render('home')}
-function top(title,back=false){return `<header class="top">${back?`<button class="back" onclick="render('home')">‹</button>`:`<div class="brand-mini">${logoImg('brand-mini-logo')}<div class="brand-word">Empoder<span>Ar</span>te</div></div>`}<h1 style="font-size:20px;margin:0">${title||''}</h1><button class="icon-btn" onclick="render('notices')">♟</button></header>`}
-function nav(active){const items=[['home','⌂','Inicio'],['classes','♫','Clases'],['payments','$','Pagos'],['notices','◆','Avisos'],['more','•••','Más']];return `<nav class="nav">${items.map(([id,ic,txt])=>`<button class="${active===id?'active':''}" onclick="render('${id}')"><span class="ni">${ic}</span>${txt}</button>`).join('')}</nav>`}
-function shell(body,active='home',title='',back=false,bg=true){return `<main class="shell screen">${bg?'<div class="screen-bg"></div>':''}${top(title,back)}${body}${nav(active)}</main>`}
-function home(){let s=demo.student;return shell(`<div class="welcome"><h1>¡Hola, ${s.name.split(' ')[0]}!</h1><p>Qué bueno verte de nuevo</p></div><div class="quick-grid"><button class="quick" onclick="render('classes')"><span class="qicon">♫</span><span>Clases</span></button><button class="quick" onclick="render('schedule')"><span class="qicon">▣</span><span>Mi horario</span></button><button class="quick" onclick="render('schedule')"><span class="qicon">▦</span><span>Calendario</span></button><button class="quick" onclick="render('payments')"><span class="qicon">$</span><span>Pagos</span></button><button class="quick" onclick="render('notices')"><span class="qicon">▤</span><span>Avisos</span></button><button class="quick" onclick="render('more')"><span class="qicon">•••</span><span>Más</span></button></div><section class="section"><div class="section-head"><h2>Próxima clase</h2><button onclick="render('classes')">Ver todas</button></div><div class="card schedule-card"><img class="thumb" src="assets/dancer-bg.jpg"><div class="item-main"><strong>Jazz</strong><small>Hoy · 5:00 PM - 6:00 PM</small><small>Salón 1 · Prof. Andrea</small></div><span class="arrow">›</span></div></section>`,'home','',false,true)}
-function classes(){let cards=demo.student.classes.map((c,i)=>`<div class="card class-card"><img class="thumb" src="${classImgs[i]}"><div class="item-main"><h3>${c[0]}</h3><p>${c[1]}</p><p>${c[2]}</p></div><span class="arrow">›</span></div>`).join('');return shell(`<section class="content"><div class="tabs"><button class="active">Todas</button><button>Infantil</button><button>Juvenil</button><button>Adultos</button></div>${cards}</section>`,'classes','Clases',true,true)}
-function schedule(){let days=Array.from({length:31},(_,i)=>i+1).map(d=>`<div class="day ${[9,13,16,20,23,27,30].includes(d)?'mark':''} ${d===6?'selected':''}">${d}</div>`).join('');return shell(`<section class="content"><div class="tabs"><button>Mi horario</button><button class="active">Calendario</button></div><div class="card calendar"><div class="month"><button class="round">‹</button><strong>Octubre 2026</strong><button class="round">›</button></div><div class="week"><div>LUN</div><div>MAR</div><div>MIÉ</div><div>JUE</div><div>VIE</div><div>SÁB</div><div>DOM</div></div><div class="days" style="margin-top:9px">${days}</div></div><div class="card schedule-card"><img class="thumb" src="assets/dancer-bg.jpg"><div class="item-main"><strong>Jazz</strong><small>5:00 PM - 6:00 PM</small><small>Salón 1 · Prof. Andrea</small></div><span class="arrow">›</span></div></section>`,'classes','Mi horario',true,true)}
-function payments(){return shell(`<section class="content"><div class="card payment-item"><span class="round-icon">▣</span><div class="item-main"><strong>Realizar un pago</strong><small>Paga tu mensualidad o inscripción</small></div><span class="arrow">›</span></div><div class="card payment-item"><span class="round-icon">▤</span><div class="item-main"><strong>Historial de pagos</strong><small>Consulta tus pagos realizados</small></div><span class="arrow">›</span></div><div class="card payment-item"><span class="round-icon">▣</span><div class="item-main"><strong>Métodos de pago</strong><small>Tarjetas y opciones disponibles</small></div><span class="arrow">›</span></div><div class="card payment-item"><span class="round-icon">▤</span><div class="item-main"><strong>Comprobantes</strong><small>Descarga tus recibos</small></div><span class="arrow">›</span></div></section>`,'payments','Pagos',true,true)}
-function notices(){return shell(`<section class="content"><div class="tabs"><button class="active">Todos</button><button>Generales</button><button>Eventos</button></div><div class="card notice-item"><span class="round-icon">!</span><div class="item-main"><strong>Suspensión de clases</strong><small>12 de octubre, 2026 · El lunes 12 no habrá clases por día festivo.</small></div><span class="arrow">›</span></div><div class="card notice-item"><span class="round-icon">★</span><div class="item-main"><strong>Inicio de temporada</strong><small>5 de octubre, 2026 · Ya estamos en temporada de presentaciones.</small></div><span class="arrow">›</span></div><div class="card notice-item"><span class="round-icon">▦</span><div class="item-main"><strong>Junta informativa</strong><small>30 de septiembre, 2026 · Reunión con padres de familia.</small></div><span class="arrow">›</span></div></section>`,'notices','Avisos',true,true)}
-function profile(){let s=demo.student;return shell(`<section class="content profile"><img class="avatar" src="assets/dancer-bg.jpg"><h2>${s.name}</h2><div class="gold">ALUMNA</div><div class="card payment-item" style="text-align:left;margin-top:18px"><span class="round-icon">♙</span><div class="item-main"><strong>Número de alumno</strong><small>${s.id}</small></div><span class="arrow">›</span></div><div class="card payment-item" style="text-align:left"><span class="round-icon">✉</span><div class="item-main"><strong>Correo</strong><small>alumno@empoderarte.mx</small></div><span class="arrow">›</span></div><div class="card payment-item" style="text-align:left"><span class="round-icon">⌕</span><div class="item-main"><strong>Grupo</strong><small>Jazz Intermedio</small></div><span class="arrow">›</span></div></section>`,'more','Mi perfil',true,true)}
-function more(){return shell(`<section class="content"><div class="card more-item"><span class="round-icon">♙</span><div class="item-main"><strong>${demo.student.name}</strong><small>Alumno · ${demo.student.id}</small></div><span class="arrow">›</span></div><div class="card more-item" onclick="render('profile')"><span class="round-icon">♙</span><div class="item-main"><strong>Mi perfil</strong><small>Consulta y actualiza tus datos</small></div><span class="arrow">›</span></div><div class="card more-item"><span class="round-icon">▤</span><div class="item-main"><strong>Mis documentos</strong><small>Documentos de inscripción</small></div><span class="arrow">›</span></div><div class="card more-item"><span class="round-icon">▣</span><div class="item-main"><strong>Credencial</strong><small>Tu credencial digital</small></div><span class="arrow">›</span></div><div class="card more-item"><span class="round-icon">⚙</span><div class="item-main"><strong>Configuración</strong><small>Preferencias de la aplicación</small></div><span class="arrow">›</span></div><div class="card more-item" onclick="logout()"><span class="round-icon">↪</span><div class="item-main"><strong>Cerrar sesión</strong></div><span class="arrow">›</span></div></section>`,'more','Más',true,true)}
-function admin(){return `<main class="shell screen"><div class="screen-bg"></div>${top('Administración',false)}<section class="content"><div class="card stat"><div class="muted">Alumnos</div><div class="big gold">247</div></div><div class="card stat" style="margin-top:12px"><div class="muted">Asistencias hoy</div><div class="big">183</div></div><div class="card stat" style="margin-top:12px"><div class="muted">Pagos recibidos</div><div class="big">$18,450</div></div><button class="btn full" style="margin-top:16px" onclick="logout()">Cerrar sesión</button></section></main>`}
-function render(page='home'){if(!sessionStorage.role)return login();if(sessionStorage.role==='admin')return admin();if(page==='home')return home();if(page==='classes')return classes();if(page==='schedule')return schedule();if(page==='payments')return payments();if(page==='notices')return notices();if(page==='more')return more();if(page==='profile')return profile();return home()}
-function logout(){sessionStorage.clear();login()}render();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+const app = document.getElementById("app");
+
+const demo = {
+  student: {
+    name: "Mariana López",
+    id: "EA-0001",
+    plan: "Paquete Mensual",
+    valid: "30/09/2026",
+    classes: [
+      ["Jazz", "5:00 PM - 6:00 PM", "Salón 1 · Prof. Andrea"],
+      ["Ballet", "6:00 PM - 7:00 PM", "Salón 2 · Prof. Mariana"],
+      ["Hip Hop", "5:00 PM - 6:00 PM", "Salón 3 · Prof. Carlos"],
+      ["Contemporáneo", "6:00 PM - 7:00 PM", "Salón 1 · Prof. Andrea"]
+    ]
+  }
+};
+
+const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[c]));
+
+function logo(cls = "logo-large") {
+  return `<img class="${cls}" src="assets/logo.png" alt="EmpoderArte Escuela de Danza">`;
+}
+
+function login() {
+  app.innerHTML = `
+    <main class="shell login-wrap">
+      <section class="login-card">
+        ${logo()}
+        <div class="field">
+          <span class="ico">♙</span>
+          <input id="email" type="text" placeholder="Número de alumno o correo" autocomplete="username">
+        </div>
+        <div class="field">
+          <span class="ico">▣</span>
+          <input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password">
+        </div>
+        <label class="remember">
+          <input id="remember" type="checkbox"> Recordarme
+        </label>
+        <button class="btn full" id="loginBtn">Iniciar sesión</button>
+        <p class="forgot">¿Olvidaste tu contraseña?</p>
+        <div class="slogan">SUEÑA <span>•</span> BAILA <span>•</span> LOGRA</div>
+      </section>
+    </main>`;
+
+  document.getElementById("loginBtn").addEventListener("click", doLogin);
+}
+
+function doLogin() {
+  const email = (document.getElementById("email").value || "").trim().toLowerCase();
+  sessionStorage.setItem("role", email.includes("admin") ? "admin" : "student");
+  render("home");
+}
+
+function top(title = "", back = false) {
+  return `
+    <header class="top">
+      ${back
+        ? `<button class="back" id="backBtn" aria-label="Regresar">‹</button>`
+        : `<div class="brand-mini">${logo("brand-mini-logo")}<div class="brand-word">Empoder<span>Ar</span>te</div></div>`}
+      <h1 style="font-size:20px;margin:0">${esc(title)}</h1>
+      <button class="icon-btn" id="noticeBtn" aria-label="Avisos">◆</button>
+    </header>`;
+}
+
+function nav(active) {
+  const items = [
+    ["home", "⌂", "Inicio"],
+    ["classes", "♫", "Clases"],
+    ["payments", "$", "Pagos"],
+    ["notices", "◆", "Avisos"],
+    ["more", "•••", "Más"]
+  ];
+
+  return `<nav class="nav">${items.map(([id, icon, text]) => `
+    <button class="${active === id ? "active" : ""}" data-page="${id}">
+      <span class="ni">${icon}</span>${text}
+    </button>`).join("")}</nav>`;
+}
+
+function shell(body, active = "home", title = "", back = false, bg = true) {
+  return `
+    <main class="shell screen">
+      ${bg ? '<div class="screen-bg"></div>' : ""}
+      ${top(title, back)}
+      ${body}
+      ${nav(active)}
+    </main>`;
+}
+
+function bindShell() {
+  document.querySelectorAll("[data-page]").forEach((button) => {
+    button.addEventListener("click", () => render(button.dataset.page));
+  });
+
+  const back = document.getElementById("backBtn");
+  if (back) back.addEventListener("click", () => render("home"));
+
+  const notice = document.getElementById("noticeBtn");
+  if (notice) notice.addEventListener("click", () => render("notices"));
+}
+
+function home() {
+  const s = demo.student;
+  return shell(`
+    <div class="welcome">
+      <h1>¡Hola, ${esc(s.name.split(" ")[0])}!</h1>
+      <p>Qué bueno verte de nuevo</p>
+    </div>
+
+    <div class="quick-grid">
+      <button class="quick" data-page="classes"><span class="qicon">♫</span><span>Clases</span></button>
+      <button class="quick" data-page="schedule"><span class="qicon">▣</span><span>Mi horario</span></button>
+      <button class="quick" data-page="schedule"><span class="qicon">▦</span><span>Calendario</span></button>
+      <button class="quick" data-page="payments"><span class="qicon">$</span><span>Pagos</span></button>
+      <button class="quick" data-page="notices"><span class="qicon">▤</span><span>Avisos</span></button>
+      <button class="quick" data-page="more"><span class="qicon">•••</span><span>Más</span></button>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Próxima clase</h2>
+        <button data-page="classes">Ver todas</button>
+      </div>
+      <div class="card schedule-card">
+        <img class="thumb" src="assets/dancer-bg.jpg" alt="">
+        <div class="item-main">
+          <strong>Jazz</strong>
+          <small>Hoy · 5:00 PM - 6:00 PM</small>
+          <small>Salón 1 · Prof. Andrea</small>
+        </div>
+        <span class="arrow">›</span>
+      </div>
+    </section>`, "home");
+}
+
+function classes() {
+  const cards = demo.student.classes.map((c) => `
+    <div class="card class-card">
+      <img class="thumb" src="assets/dancer-bg.jpg" alt="">
+      <div class="item-main">
+        <h3>${esc(c[0])}</h3>
+        <p>${esc(c[1])}</p>
+        <p>${esc(c[2])}</p>
+      </div>
+      <span class="arrow">›</span>
+    </div>`).join("");
+
+  return shell(`
+    <section class="content">
+      <div class="tabs">
+        <button class="active">Todas</button><button>Infantil</button><button>Juvenil</button><button>Adultos</button>
+      </div>
+      ${cards}
+    </section>`, "classes", "Clases", true);
+}
+
+function schedule() {
+  const days = Array.from({length: 31}, (_, i) => i + 1)
+    .map((d) => `<div class="day ${[9,13,16,20,23,27,30].includes(d) ? "mark" : ""} ${d === 6 ? "selected" : ""}">${d}</div>`)
+    .join("");
+
+  return shell(`
+    <section class="content">
+      <div class="tabs"><button>Mi horario</button><button class="active">Calendario</button></div>
+      <div class="card calendar">
+        <div class="month"><button class="round">‹</button><strong>Octubre 2026</strong><button class="round">›</button></div>
+        <div class="week"><div>LUN</div><div>MAR</div><div>MIÉ</div><div>JUE</div><div>VIE</div><div>SÁB</div><div>DOM</div></div>
+        <div class="days" style="margin-top:9px">${days}</div>
+      </div>
+      <div class="card schedule-card">
+        <img class="thumb" src="assets/dancer-bg.jpg" alt="">
+        <div class="item-main"><strong>Jazz</strong><small>5:00 PM - 6:00 PM</small><small>Salón 1 · Prof. Andrea</small></div>
+        <span class="arrow">›</span>
+      </div>
+    </section>`, "classes", "Mi horario", true);
+}
+
+function payments() {
+  return shell(`
+    <section class="content">
+      ${[
+        ["▣", "Realizar un pago", "Paga tu mensualidad o inscripción"],
+        ["▤", "Historial de pagos", "Consulta tus pagos realizados"],
+        ["▣", "Métodos de pago", "Tarjetas y opciones disponibles"],
+        ["▤", "Comprobantes", "Descarga tus recibos"]
+      ].map(([icon, title, text]) => `
+        <div class="card payment-item"><span class="round-icon">${icon}</span><div class="item-main"><strong>${title}</strong><small>${text}</small></div><span class="arrow">›</span></div>`).join("")}
+    </section>`, "payments", "Pagos", true);
+}
+
+function notices() {
+  return shell(`
+    <section class="content">
+      <div class="tabs"><button class="active">Todos</button><button>Generales</button><button>Eventos</button></div>
+      ${[
+        ["!", "Suspensión de clases", "12 de octubre, 2026 · El lunes 12 no habrá clases por día festivo."],
+        ["★", "Inicio de temporada", "5 de octubre, 2026 · Ya estamos en temporada de presentaciones."],
+        ["▦", "Junta informativa", "30 de septiembre, 2026 · Reunión con padres de familia."]
+      ].map(([icon, title, text]) => `
+        <div class="card notice-item"><span class="round-icon">${icon}</span><div class="item-main"><strong>${title}</strong><small>${text}</small></div><span class="arrow">›</span></div>`).join("")}
+    </section>`, "notices", "Avisos", true);
+}
+
+function profile() {
+  const s = demo.student;
+  return shell(`
+    <section class="content profile">
+      <img class="avatar" src="assets/dancer-bg.jpg" alt="">
+      <h2>${esc(s.name)}</h2><div class="gold">ALUMNA</div>
+      <div class="card payment-item"><span class="round-icon">♙</span><div class="item-main"><strong>Número de alumno</strong><small>${esc(s.id)}</small></div></div>
+      <div class="card payment-item"><span class="round-icon">✉</span><div class="item-main"><strong>Correo</strong><small>alumno@empoderarte.mx</small></div></div>
+      <div class="card payment-item"><span class="round-icon">⌕</span><div class="item-main"><strong>Grupo</strong><small>Jazz Intermedio</small></div></div>
+    </section>`, "more", "Mi perfil", true);
+}
+
+function more() {
+  return shell(`
+    <section class="content">
+      <div class="card more-item"><span class="round-icon">♙</span><div class="item-main"><strong>${esc(demo.student.name)}</strong><small>Alumno · ${esc(demo.student.id)}</small></div></div>
+      <div class="card more-item" data-page="profile"><span class="round-icon">♙</span><div class="item-main"><strong>Mi perfil</strong><small>Consulta y actualiza tus datos</small></div><span class="arrow">›</span></div>
+      <div class="card more-item"><span class="round-icon">▤</span><div class="item-main"><strong>Mis documentos</strong><small>Documentos de inscripción</small></div><span class="arrow">›</span></div>
+      <div class="card more-item"><span class="round-icon">▣</span><div class="item-main"><strong>Credencial</strong><small>Tu credencial digital</small></div><span class="arrow">›</span></div>
+      <div class="card more-item"><span class="round-icon">⚙</span><div class="item-main"><strong>Configuración</strong><small>Preferencias de la aplicación</small></div><span class="arrow">›</span></div>
+      <button class="btn full" id="logoutBtn" style="margin-top:14px">Cerrar sesión</button>
+    </section>`, "more", "Más", true);
+}
+
+function admin() {
+  return `
+    <main class="shell screen">
+      <div class="screen-bg"></div>${top("Administración")}
+      <section class="content">
+        <div class="card stat"><div class="muted">Alumnos</div><div class="big gold">247</div></div>
+        <div class="card stat" style="margin-top:12px"><div class="muted">Asistencias hoy</div><div class="big">183</div></div>
+        <div class="card stat" style="margin-top:12px"><div class="muted">Pagos recibidos</div><div class="big">$18,450</div></div>
+        <button class="btn full" id="logoutBtn" style="margin-top:16px">Cerrar sesión</button>
+      </section>
+    </main>`;
+}
+
+function logout() {
+  sessionStorage.clear();
+  login();
+}
+
+function render(page = "home") {
+  if (!sessionStorage.getItem("role")) {
+    login();
+    return;
+  }
+
+  if (sessionStorage.getItem("role") === "admin") {
+    app.innerHTML = admin();
+    document.getElementById("logoutBtn")?.addEventListener("click", logout);
+    bindShell();
+    return;
+  }
+
+  const pages = {home, classes, schedule, payments, notices, more, profile};
+  app.innerHTML = (pages[page] || home)();
+  bindShell();
+  document.getElementById("logoutBtn")?.addEventListener("click", logout);
+}
+
+render();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+}
