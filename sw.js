@@ -1,4 +1,4 @@
-const CACHE = "empoderarte-v3";
+const CACHE = "empoderarte-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -11,9 +11,7 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
   self.skipWaiting();
 });
 
@@ -21,9 +19,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys
-          .filter((key) => key !== CACHE)
-          .map((key) => caches.delete(key))
+        keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))
       )
     )
   );

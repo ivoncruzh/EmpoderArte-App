@@ -1,1 +1,20 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0a0a0a"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="styles.css"><title>EmpoderArte App</title></head><body><div id="app"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css?v=4">
+<title>EmpoderArte App</title>
+</head>
+<body>
+<div id="app"><div style="min-height:100vh;background:#050505;color:#fff;display:grid;place-items:center;font-family:system-ui">Cargando EmpoderArte…</div></div>
+<script src="app.js?v=4"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js?v=4", {updateViaCache:"none"});
+}
+</script>
+</body>
+</html>
