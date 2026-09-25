@@ -46,4 +46,17 @@ function studentPage(page='home'){
 function adminPage(){app.innerHTML=`<main class="shell"><div class="screen">${top('Administración')}<section class="content"><div class="hero"><div class="eyebrow">PANEL ADMINISTRATIVO</div><h1>EmpoderArte</h1><p class="subtitle">Control general de la escuela</p></div><div class="stat-grid"><div class="glass stat"><div class="num gold">247</div><div class="small">Alumnos</div></div><div class="glass stat"><div class="num">183</div><div class="small">Asistencias hoy</div></div><div class="glass stat"><div class="num">$18,450</div><div class="small">Pagos recibidos</div></div><div class="glass stat"><div class="num">32</div><div class="small">Pendientes</div></div></div></section></div></main>`}
 function render(page='home'){if(!sessionStorage.role)return login();if(sessionStorage.role==='admin')return adminPage();studentPage(page)}
 function logout(){sessionStorage.clear();login()}
-render();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+(async()=>{
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+  }catch(e){}
+  try{ render(); }
+  catch(e){
+    document.getElementById('app').innerHTML =
+      '<main style="min-height:100vh;background:#050505;color:#fff;display:grid;place-items:center;padding:24px;text-align:center;font-family:system-ui"><div><h2>EmpoderArte</h2><p>La aplicación tuvo un error al iniciar.</p><button onclick="location.reload()" style="padding:12px 18px;border-radius:10px">Recargar</button></div></main>';
+    console.error(e);
+  }
+})();

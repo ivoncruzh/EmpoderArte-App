@@ -5,12 +5,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070707">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 <title>EmpoderArte · Escuela de Danza</title>
+<script>
+/* Evita que una versión antigua del Service Worker deje la app en negro. */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())).catch(()=>{});
+  if (window.caches) {
+    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).catch(()=>{});
+  }
+}
+</script>
 </head>
 <body>
-<div id="app"></div>
-<script src="app.js"></script>
+<div id="app">
+  <main style="min-height:100vh;background:#050505;color:#fff;display:grid;place-items:center;padding:24px;text-align:center;font-family:system-ui">
+    <div><strong>Cargando EmpoderArte…</strong></div>
+  </main>
+</div>
+<script src="app.js?v=3" defer></script>
 </body>
 </html>
